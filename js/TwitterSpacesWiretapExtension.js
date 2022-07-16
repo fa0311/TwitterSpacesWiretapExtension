@@ -81,8 +81,10 @@ new MutationObserver(async () => {
   if (href == location.href) return;
   href = location.href;
   if (href.match(new RegExp("https://twitter.com/i/spaces/")) == null) return;
-  let id = href.split("?")[0].split("/").slice(-1)[0];
-  if (id == "peek") id = href.split("?")[0].split("/").slice(-2)[0];
+  if (document.getElementById("twitter-spaces-wiretap-audio") != null) return;
+  let hrefList = href.split("?")[0].split("/");
+  let id = hrefList.slice(-1)[0];
+  if (id == "peek") id = hrefList.slice(-2)[0];
   console.log(id);
 
   let space = new TwitterSpacesWiretap();
@@ -93,12 +95,34 @@ new MutationObserver(async () => {
 
   const audio = document.createElement("audio");
   audio.setAttribute("controls", "");
-  document
-    .querySelectorAll('div[role="menu"] div[aria-haspopup="menu"]')[0]
-    .parentNode.parentNode.prepend(audio);
+  audio.id = "twitter-spaces-wiretap-audio";
+
+  if (hrefList.slice(-1)[0] == "peek") {
+    let element;
+    for (let i = 0; i < 10; i++) {
+      element = document.querySelector(
+        'div[role="menu"] div[aria-haspopup="menu"]'
+      );
+      if (element != null) break;
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+    if (element == null) return;
+    element.parentNode.parentNode.prepend(audio);
+  } else {
+    let element;
+    for (let i = 0; i < 10; i++) {
+      element = document.querySelector(
+        'div[data-testid="placementTracking"] div[role="button"] > div > div'
+      );
+      if (element != null) break;
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+    if (element == null) return;
+    element.append(audio);
+  }
 
   if (Hls.isSupported()) {
-    var hls = new Hls();
+    let hls = new Hls();
     hls.loadSource(url);
     hls.attachMedia(audio);
     audio.play();

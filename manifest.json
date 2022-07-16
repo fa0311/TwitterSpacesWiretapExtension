@@ -6,9 +6,6 @@
     "action": {
         "default_popup": "html/popup.html"
     },
-    "permissions": [
-        "storage"
-    ],
     "content_scripts": [
         {
             "matches": [

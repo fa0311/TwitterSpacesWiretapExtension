@@ -1,0 +1,15 @@
+@keyframes hide-animation {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.twitter-screensaver-hide {
+  animation: hide-animation 1s linear 0s;
+  animation-fill-mode: forwards;
+}

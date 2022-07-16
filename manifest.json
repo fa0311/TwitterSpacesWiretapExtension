@@ -13,10 +13,7 @@
             ],
             "js": [
                 "js/TwitterSpacesWiretapExtension.js",
-                "js/hls.js"
-            ],
-            "css": [
-                "css/TwitterSpacesWiretapExtension.css"
+                "js/hls.js/hls.min.js"
             ]
         }
     ]

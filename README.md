@@ -6,7 +6,7 @@ Twitter のスペースに参加せずに試し聞きできる Chrome 拡張機�
 
 # インストール
 
-[releases](https://github.com/fa0311/TwitterScreensaver/releases) の _TwitterScreensaver.zip_ を選択してファイルをダウンロード<br>
+[releases](https://github.com/fa0311/TwitterSpacesWiretap/releases) の _TwitterSpacesWiretap.zip_ を選択してファイルをダウンロード<br>
 Chrome の _拡張機能の管理_ を選択して _デベロッパーモード_ を有効にした後、ダウンロードした zip ファイルをページにドラッグしてください<br>
 
 # 典拠
@@ -15,4 +15,4 @@ Chrome の _拡張機能の管理_ を選択して _デベロッパーモード_
 
 # License
 
-TwitterScreensaver is under MIT License
+TwitterSpacesWiretap is under MIT License

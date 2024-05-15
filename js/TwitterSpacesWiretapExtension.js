@@ -5,37 +5,38 @@ class TwitterSpacesWiretap {
   }
 
   getHeaders() {
-    let cookie = this.getCookieArray();
-    let headers = {
+    const cookie = this.getCookieArray();
+    const headers = {
       authorization: this.AUTHORIZATION,
       "Content-type": "application/json",
       "x-csrf-token": cookie["ct0"],
       "x-twitter-active-user": "yes",
-      "x-twitter-client-language": "ja",
+      "x-twitter-client-language": "en",
     };
-    if (cookie["gt"] != undefined) {
-      headers = { ...headers, ...{ "x-guest-token": cookie["gt"] } };
+    if (cookie["gt"] == undefined) {
+      return headers;
+    } else {
+      return { ...headers, ...{ "x-guest-token": cookie["gt"] } };
     }
-    return headers;
   }
 
   getCookieArray() {
-    let arr = new Array();
+    const arr = new Array();
     if (document.cookie != "") {
-      let tmp = document.cookie.split("; ");
-      for (let i = 0; i < tmp.length; i++) {
-        let data = tmp[i].split("=");
+      const tmp = document.cookie.split("; ");
+      Array.from({ length: tmp.length }, (_, i) => {
+        const data = tmp[i].split("=");
         arr[data[0]] = decodeURIComponent(data[1]);
-      }
+      });
     }
     return arr;
   }
 
   async AudioSpaceById(id) {
-    let url = new URL(
+    const url = new URL(
       "https://twitter.com/i/api/graphql/Uv5R_-Chxbn1FEkyUkSW2w/AudioSpaceById"
     );
-    let params = new URLSearchParams({
+    const params = new URLSearchParams({
       variables: JSON.stringify({
         id: id,
         isMetatagsQuery: true,
@@ -50,7 +51,7 @@ class TwitterSpacesWiretap {
       }),
     });
 
-    let response = await fetch(url.toString() + "?" + params.toString(), {
+    const response = await fetch(url.toString() + "?" + params.toString(), {
       headers: this.getHeaders(),
       method: "GET",
     });
@@ -58,16 +59,16 @@ class TwitterSpacesWiretap {
   }
 
   async live_video_stream(media_key) {
-    let url = new URL(
+    const url = new URL(
       "https://twitter.com/i/api/1.1/live_video_stream/status/" + media_key
     );
-    let params = new URLSearchParams({
+    const params = new URLSearchParams({
       client: "web",
       use_syndication_guest_id: false,
       cookie_set_host: "twitter.com",
     });
 
-    let response = await fetch(url.toString() + "?" + params.toString(), {
+    const response = await fetch(url.toString() + "?" + params.toString(), {
       headers: this.getHeaders(),
       method: "GET",
     });
@@ -76,7 +77,7 @@ class TwitterSpacesWiretap {
 }
 
 new MutationObserver(async () => {
-  href = location.href;
+  const href = location.href;
   if (href.match(new RegExp("https://twitter.com/i/spaces/")) == null) return;
   if (document.getElementById("twitter-spaces-wiretap-audio") != null) return;
 
@@ -84,34 +85,26 @@ new MutationObserver(async () => {
   audio.setAttribute("controls", "");
   audio.id = "twitter-spaces-wiretap-audio";
 
-  let element;
-  let hrefList = href.split("?")[0].split("/");
-  let id = hrefList.slice(-1)[0];
-  if (id == "peek") {
-    id = hrefList.slice(-2)[0];
-    element = document.querySelector(
-      'div[role="menu"] div[aria-haspopup="menu"]'
+  const hrefList = href.split("?")[0].split("/");
+  const [peek, id] = hrefList.reverse();
+  if (peek == "peek") {
+    const element = document.querySelector(
+      'div[data-testid="sheetDialog"] > div > div > div > button'
     );
     if (element == null) return;
-    element.parentNode.parentNode.prepend(audio);
-  } else {
-    element = document.querySelector(
-      'div[data-testid="placementTracking"] div[role="button"] > div > div'
-    );
-    if (element == null) return;
-    element.append(audio);
+    element.parentNode.parentNode.insertBefore(audio, element.parentNode.nextElementSibling);
   }
 
   console.log(id);
 
-  let space = new TwitterSpacesWiretap();
-  let media_key = (await space.AudioSpaceById(id)).data.audioSpace.metadata
+  const space = new TwitterSpacesWiretap();
+  const media_key = (await space.AudioSpaceById(id)).data.audioSpace.metadata
     .media_key;
-  let url = (await space.live_video_stream(media_key)).source.location;
+  const url = (await space.live_video_stream(media_key)).source.location;
   console.log(url);
 
   if (Hls.isSupported()) {
-    let hls = new Hls();
+    const hls = new Hls();
     hls.loadSource(url);
     hls.attachMedia(audio);
     audio.play();

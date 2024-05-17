@@ -1,5 +1,6 @@
 class TwitterSpacesWiretap {
   constructor() {
+    this.ORIGIN = location.origin;
     this.AUTHORIZATION =
       "Bearer AAAAAAAAAAAAAAAAAAAAANRILgAAAAAAnNwIzUejRCOuH5E6I8xnZz4puTs%3D1Zv7ttfk8LF81IUq16cHjhLTvJu4FA33AGWWjCpTnA";
   }
@@ -33,9 +34,7 @@ class TwitterSpacesWiretap {
   }
 
   async AudioSpaceById(id) {
-    const url = new URL(
-      "https://twitter.com/i/api/graphql/Uv5R_-Chxbn1FEkyUkSW2w/AudioSpaceById"
-    );
+    const url = new URL(this.ORIGIN + "/i/api/graphql/Uv5R_-Chxbn1FEkyUkSW2w/AudioSpaceById");
     const params = new URLSearchParams({
       variables: JSON.stringify({
         id: id,
@@ -59,9 +58,7 @@ class TwitterSpacesWiretap {
   }
 
   async live_video_stream(media_key) {
-    const url = new URL(
-      "https://twitter.com/i/api/1.1/live_video_stream/status/" + media_key
-    );
+    const url = new URL(this.ORIGIN + "/i/api/1.1/live_video_stream/status/" + media_key);
     const params = new URLSearchParams({
       client: "web",
       use_syndication_guest_id: false,
@@ -77,8 +74,9 @@ class TwitterSpacesWiretap {
 }
 
 new MutationObserver(async () => {
+  this.origin = location.origin;
   const href = location.href;
-  if (href.match(new RegExp("https://twitter.com/i/spaces/")) == null) return;
+  if (href.match(new RegExp(origin + "/i/spaces/")) == null) return;
   if (document.getElementById("twitter-spaces-wiretap-audio") != null) return;
 
   const audio = document.createElement("audio");
